@@ -1,0 +1,18 @@
+\contentsline {chapter}{\numberline {1}神经网络简介}{2}{chapter.1}
+\contentsline {section}{\numberline {1.1}生物神经网络(Biological Neural Networks)}{3}{section.1.1}
+\contentsline {section}{\numberline {1.2}人工神经网络(Artificial Neural Networks) }{4}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}人工神经元模型}{4}{subsection.1.2.1}
+\contentsline {subsection}{\numberline {1.2.2}人工神经网络的构成}{6}{subsection.1.2.2}
+\contentsline {subsubsection}{\numberline {1.2.2.1}感知机(Perceptron)}{6}{subsubsection.1.2.2.1}
+\contentsline {subsubsection}{\numberline {1.2.2.2}多层感知机(MLP)}{7}{subsubsection.1.2.2.2}
+\contentsline {subsection}{\numberline {1.2.3}人工神经网络的学习}{8}{subsection.1.2.3}
+\contentsline {chapter}{\numberline {2}算法设计方案}{9}{chapter.2}
+\contentsline {section}{\numberline {2.1}方案}{9}{section.2.1}
+\contentsline {section}{\numberline {2.2}Newton迭代法}{10}{section.2.2}
+\contentsline {section}{\numberline {2.3}分片双二次插值}{10}{section.2.3}
+\contentsline {chapter}{\numberline {3}问题求解}{12}{chapter.3}
+\contentsline {chapter}{\numberline {4}源程序}{13}{chapter.4}
+\contentsline {section}{\numberline {4.1}C语言版大作业}{13}{section.4.1}
+\contentsline {chapter}{\numberline {5}计算结果}{21}{chapter.5}
+\contentsline {chapter}{\numberline {6}讨论}{23}{chapter.6}
+\contentsfinish 
