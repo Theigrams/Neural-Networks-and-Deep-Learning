@@ -1,5 +1,6 @@
 \input{Head}
-
+\renewcommand{\algorithmicrequire}{ \textbf{Input:}} %Use Input in the format of Algorithm  
+\renewcommand{\algorithmicensure}{ \textbf{Output:}} %UseOutput in the format of Algorithm  
 
 
 \title{神经网络和深度学习笔记}
@@ -15,7 +16,7 @@
 \newpage
 
 \chapter{神经网络简介}
-\textit{“神经网络是由具有适应性的简单单元组成的广泛并行互连的网络，它的组织能够模拟生物神经系统对真实世界物体所作出的交互反应”}---Kohonen
+\textit{“神经网络是由具有适应性的简单单元组成的广泛并行互连的网络，它的组织能够模拟生物神经系统对真实世界物体所作出的交互反应”}---[Kohonen,1988]
 
 \newpage
 \section{生物神经网络(Biological Neural Networks)}
@@ -58,7 +59,7 @@
 \caption{Artificial Neural Networks} \label{fig:2}
 \end{figure}
 
-\subsection{人工神经元模型}
+\subsection{人工神经元模型(Artificial Neuron Model)}
 
 神经网络中最基本的成分是\textcolor{blue}{神经元(neuron)模型}，即上述定义中的“简单单元”。在生物神经网络中，每个神经元与其他神经元相连，当它“兴奋”时，就会向相连的神经元发送化学物质，从而改变这些神经元内的电位；如果某神经元的电位超过了一个\textcolor{blue}{"阈值”(threshold)}，那么它就会被激活，即“兴奋"起来，向其他神经元发送化学物质。
 
@@ -82,7 +83,7 @@
 \end{figure}
 
 
-\subsection{人工神经网络的构成}
+\subsection{人工神经网络的构成(Structure of ANN)}
 \subsubsection{感知机(Perceptron)}
 
 感知机(Perceptron)由两层神经元组成，如图所示，输入层接收外界输入信号后传递给输出层，输出层是M-P神经元，亦称"阈值逻辑单元"(threshold logic unit)
@@ -120,7 +121,10 @@
 
 从图中可以看出，与、或、非问题的分类样本是可以用一条直线分开的，即具有“线性可分”性质。
 
+
+
 \subsubsection{多层感知机(MLP)}
+
 \textcolor{red}{要解决非线性可分问题,就需考虑多层功能神经元。}
 
 而“异或”问题的分类样本需要两条线才能将其分开，故需要两层感知机才能实现，如图1.6
@@ -132,6 +136,7 @@
 \caption{能解决异或问题的两层感知机} \label{fig:6}
 \end{figure}
 
+多层感知机(MLP)的结构如下:
 \begin{center}
   \includegraphics{figure//tikz11}
 \end{center}
@@ -147,591 +152,71 @@
 
 \item 只需包含隐层，即可称为多层网络.神经网络的学习过程，就是根据训练数据来调整神经元之间的\textcolor{blue}{“连接权” (connection weight)}以及每个功能神经元的阈值;
 
-\item 换言之，神经网络“学”到的东西，蕴涵在\textcolor{red}{连接权与阈值}中。
+\item 换言之，神经网络“学”到的东西，蕴涵在\textcolor{red}{连接权}与\textcolor{red}{阈值}中。
 
 \end{itemize}
-\subsection{人工神经网络的学习}
-
+\subsection{人工神经网络的学习(Training of ANN)}
+\textcolor{blue}{\textbf{反向传播算法}(error Back Propagation,简称 BP)}是迄今最成功的神经网络学习算法.它可用来学习由一系列确定的单元互连形成的多层网络的权值。
+它采用\textcolor{red}{梯度下降方法}试图最小化网络输出值和目标值之间的\textcolor{blue}{误差平方}。
+其主要思想是:
 \begin{enumerate}
-\item 试用数值方法求出$f(x, y)$在区域
-$D = \{ (x,y)|0 \le x \le 0.8,0.5 \le y \le 1.5\}$上的一个近似表达式：
+\item 将训练集数据输入到ANN的输入层，经过隐藏层，最后达到输出层并输出结果，这是ANN的前向传播过程；
 
-\[\boxed{p(x,y) = \sum\limits_{r,s = 0}^k {{c_{rs}}{x^r}{y^s}} }\]
-要求$p(x,y)$最小的$k$值达到以下的精度：
-\[\sigma  = \sum\limits_{i = 0}^{10} {\sum\limits_{j = 0}^{20} {(f({x_i},{y_j}) - p} } ({x_i},{y_j}){)^2} \le {10^{ - 7}}\]
-其中，${x_i} = 0.08i,{y_j} = 0.5 + 0.05j$。
+\item 由于ANN的输出结果与实际结果有误差，则计算估计值与实际值之间的误差，并将该误差从输出层向隐藏层反向传播，直至传播到输入层；
 
-\item 计算$f(x_i^{\ast},y_j^{\ast}),p(x_i^{\ast},y_j^{\ast})\qquad (i = 1, 2,\cdots,8;j = 1,2,\cdots,5)$的值，以观察$p(x,y)$逼近$f(x,y)$的效果，其中,$x_i^{\ast}=0.1\bm{i},y_j^{\ast}=0.5+0.2\bm{j}$。
-\end{enumerate}
+\item 在反向传播的过程中，根据误差调整各种参数的值；不断迭代上述过程，直至收敛。
 
+\begin{figure}[h]
+\small
+\centering
+\includegraphics[width=14cm]{figure//7.jpg}
+\caption{神经网络} \label{fig:7}
+\end{figure}
 
-\qd{说明}：
-\begin{enumerate}
-\item 用迭代方法求解非线性方程组时，要求近似解向量
-${\bm{x}^{(k)}}$满足以下精度
-\[\dfrac{\|{\bm{x}^{(k)}} - {\bm{x}^{(k - 1)}}\|_{\infty }}{\|{\bm{x}^{(k)}}\|_{\infty }} \le {10^{ - 12}}\]
-
-\item 作二元插值时，要使用分片二次代数插值。
-
-\item 要由程序自动确定最小的$k$值。
-
-\item 打印以下内容：
-
-\begin{enumerate}
-\item 全部源程序;
-
-\item 数表:$({x_i},{y_j},f({x_i},{y_j}))\qquad (i = 0,1,2,\cdots,10;j = 0,1,2,\cdots,20)$;
-
-\item 选择过程的$k,\sigma$值;
-
-\item 达到精度要求时的$k$和$\sigma$值以及$p(x,y)$中的系数
-$c_{rs}(r = 0,1,\cdots,k;s = 0,1,\cdots,k)$;
-
-\item 数表:$(x_i^{\ast},y_j^{\ast},f(x_i^{\ast},y_j^{\ast})),p(x_i^{\ast},y_j^{\ast})\qquad (i = 1, 2,\cdots,8;j = 1,2,\cdots,5)$。
-
-\end{enumerate}
-\item 采用$f$型输出$x_i,y_j,x_i^{\ast},y_j^{\ast}$的准确值，其余实型数采用$e$型输出并且至少显示12位有效数字。
-\end{enumerate}
-
-
-\newpage
-\chapter{算法设计方案}
-\section{方案}
-\begin{enumerate}
-\item 将${x_i} = 0.08i,{y_j} = 0.5 + 0.05j\quad (i=0,1,\cdots,10;j=0,1,\cdots,20)$代入方程组中，用Newton迭代法解出$t_{ij}$和$u_{ij}$;
-
-\item 对数表$z(t,u)$进行分片二次代数插值,
-求得$z_{ij}=f(t_{ij},u_{ij})$
-
-\item 根据$z_{ij}$的值进行曲面拟合，得$p(x,y)$
-
-\item 观察比较
-\end{enumerate}
-\newpage
-
-\section{Newton迭代法}
-
-\[\left\{ \begin{array}{l}
-0.5\cos t + u + v + w - x = 2.67\\
-t + 0.5\sin u + v + w - y = 1.07\\
-0.5t + u + \cos v + w - x = 3.74\\
-t + 0.5u + v + \sin w - y = 0.79
-\end{array} \right.\]
-
-对于该非线性方程组方程组来说，$x,y$为已知量，
-需解出$t,u,v,w$。
-
-设$\bm{x}= {(t,u,v,w)^T}$,并设定精度水平${\varepsilon } = {10^{ - 12}}$和最大迭代次数$M$
-
-先在${\bm{x}^{\ast}}$附件选取${\bm{x}^{(0)}}= {({t^{(0)}},{u^{(0)}},{v^{(0)}},{w^{(0)}})^T}$
-
-具体算法如下：
 \begin{algorithm}[h]  
-\caption{Newton's method}  
+\caption{BP Algorithm}  
 \begin{algorithmic}[1]  
-\STATE Set $\bm{x}^{(0)}\in D$ and $k=0$
-\WHILE {k<M}
-\STATE Compute $\bm{F}(\bm{x}^{(k)})$ 
-and $\bm{F}'(\bm{x}^{(k)})$
-\STATE Compute $\Delta \bm{x}^{(k)}=-[\bm{F}'(\bm{x}^{(k))}]^{-1}\bm{F}(\bm{x}^{(k)})$
-\IF {$\|\Delta \bm{x}^{(k)}\|/\|\bm{x}^{(k+1)}\|\le \varepsilon$}
-\STATE $\bm{x}^{\ast}=\bm{x}^{(k)}$
-\STATE Break
-\ENDIF 
-\STATE $\bm{x}^{(k+1)}= \bm{x}^{(k)}+
-\Delta \bm{x}^{(k)}$
-\STATE k=k+1
+\REQUIRE ~~\\
+训练集$D={(x_k,y_k)}_{k=1}^m$,学习率 $\eta$
+\ENSURE ~~\\
+连接权与阈值确定的多层前馈神经网络
+
+\STATE 在(0,1)范固内随机初始化网络中所有连接权和阈值
+\WHILE {未达到停止条件}
+\STATE 计算当前样本的输出$\hat{y}_k$
+\STATE 计算输出层神经元的梯度项$g_j$
+\STATE 计算隐层神经元的梯度项 $e_h$
+\STATE 更新连接权$w_{hj},v_{ih}$与阈值$\theta_j,\gamma_h$
 \ENDWHILE
 \end{algorithmic}  
 \end{algorithm}  
-
-
-
-
-\section{分片双二次插值}
-
-
-
-
-为了加快$QR$迭代的收敛速度, 我们可以采用位移策略和反迭代思想.
-\begin{algorithm}[h]  
-\caption{QR Iteration with shift}  
-\begin{algorithmic}[1]  
-\STATE Set $A_1=A$ and $k=1$
-\WHILE {not convergence}
-\STATE Choose a shift $\sigma_k$
-\STATE ${A_{k}-\sigma_kI} = Q_k R_k$
-\STATE Compute $A_{k+1}=R_k Q_k+\sigma_kI$
-\STATE k=k+1
-\ENDWHILE
-\end{algorithmic}  
-\end{algorithm}  
-
-我们有
-\begin{align*}
-A_{k+1}=R_kQ_k+\sigma_kI&=(Q^T_kQ_k)R_kQ_k+\sigma_kI\\
-&=Q^T_k(A_k-\sigma_kI)Q_k+\sigma_kI\\
-&=Q^T_kA_kQ_k
-\end{align*}
-
-所以, 带位移的$QR$算法中所得到的所有矩阵$A_k$都与$A$正交相似.
-
-\newpage
-\chapter{问题求解}
-\begin{enumerate}
-\item 初始化定义$A$矩阵
-
-\item 采用$Householder$变化将$A$矩阵拟上三角化得到矩阵$A^{n-1}$
-
-\item 采用$QR$分解将矩阵$A^{n-1}$分解为矩阵Q与R，并打印RQ
-
-\item 用带双步位移的QR方法求解所有特征值
-
-\item 用Gauss消去法求解$(A-\lambda I)X=0$,得到对应的特征向量
-
-\item 输出
 \end{enumerate}
-\newpage
 
+\section{神经网络应用现状}
+人工神经网络(ANN)以其独特的结构和处理信息的方法，在许多实际应用领域中取得了显著的成效，主要应用如下：
+\begin{itemize}
+\item \textbf{模式识别}\\
+\textit{在模式识别实践中通常存在着噪声干扰和输入输出信息缺失的情况，神经网络的分布式信息存储特性使得其具有良好的容错性和鲁棒性，因此在解决模式识别问题时具有较大的优越性。事实上，模式识别技术的广泛应用也是人工神经网络技术发展的一个重要方面。神经网络在这个领域中有许多成功的应用，例如目前市场上被人们广为熟知的手写输入和语音输入等智能系统。}
 
-\chapter{源程序}
-\section{C语言版大作业}
-\begin{lstlisting}[language=C]
-#include<stdio.h>
-#include<math.h>
-#include<string.h>
-#define N 20
-const double eps=1e-12;
-double a[N][N],B[N][N],C[N][N];
-int n=10;
+\item \textbf{自动控制}\\
+\textit{神经网络的诸多特点决定了其应用于自动控制领域的优越性。如神经网络本质上就是并行计算、分布结构的非线性动力学系统，可应用于那些难以用模型描述的过程或系统及应用于实时性要求较高的自动控制领域。另外，神经网络具有较强的信息综合能力，在多变量复杂系统的控制方案设计上具有一定明显的优势。}
 
-typedef struct{
-//定义复数结构体
-    double Re;
-    double Im;
-}ComplexNumber;
-
-void zeroMat(double a[N][N]){
-    for(int i= 1; i<=10; i++) {
-        for(int j = 1; j<=10; j++) {
-            if (fabs(a[i][j])<eps)
-                a[i][j] = 0;
-        }
-    }
+\item \textbf{信号处理}\\
+\textit{    神经网络的自学习和自适应特性使其成为一种对各类信号进行多用途综合加工处理的天然工具，被广泛地应用于自适应信号处理和非线性信号处理。
 }
 
-void def(){
-	//初始化A数组
-	for(int i=1;i<=n;i++)
-		for(int j=1;j<=n;j++){
-			if(i==j)
-				a[i][j]=1.52*cos(i+1.2*j);
-			else if(i!=j)
-				a[i][j]=sin(0.5*i+0.2*j);
-		}
+\item \textbf{人工智能}\\
+\textit{人们在应用专家系统解决类似于人脑形象思维的问题时遇到了较大的困难，而人工神经网络的发展则为本已遇到“瓶颈”问题的人工智能带来了新的出路。这主要得益于人工神经网络的自学习、自适应能力和良好的容错特性。这方面的主要应用有自然语言处理、逻辑推理、模糊判断、系统诊断、密码破译、智能机器人等。
 }
+\end{itemize}
 
-void eye(double Q[N][N]){
-	//定义单位阵 
-	for(int i=1;i<=n;i++)
-		for(int j=1;j<=n;j++)
-			Q[i][j]=(i==j);
-}
+以上只是大概地简单列举了四个方面的应用。事实上，人工神经网络的应用领域是十分广泛的。例如，人工神经网络还可以用来解决最优化问题(包括组合优化、条件约束优化等这类问题)或者开发出用于矩阵/向量运算的数字计算机协处理器，在经济领域中也可以用来进行市场预测和信贷分析等方面的工作。此外，在医学领域、军事领域、化学领域甚至娱乐视听领域，人工神经网络都取得了一定的成功应用。这也正是科学技术转化为具体生产力的表现。相信随着人工神经网络研究的进一步深人和发展，特别是当人工神经网络作为一种智能化方法同其他学科和领域更为紧密地结合起来的时候，人工神经网络的应用前景也将更为广阔。
 
-int Is_zero(double Q[N][N],int r,int k){
-	//K>0表示在QR中调用，K<0表示在 DQR中调用 
-	int kk=n;//更改数组大小 
-	if(k<0){kk=-k;k=1;}
-	for(int i=r+k;i<=kk;i++)
-		if(fabs(Q[i][r])>eps)
-			return 0;
-	return 1;
-}
+\chapter{反向传播算法}
+反向传播算法的核心是一个对代价函数 $C$ 关于任何权重 $w$
+和偏置$b$的偏导数 $\partial C/\partial w,\partial C/\partial b$ 的表达式。这个表达式告诉我们在改变权重和偏置时，代价函数变化的快慢，所以反向传播不仅仅是一种学习的快速算法。实际上它让我们细致领悟如何通过改变权
+重和偏置来改变整个网络的行为。
 
 
-int sgn(double x){
-	if(x>0)
-		return 1;
-	return -1;
-}
-
-void Matirix_M(double A[N][N],double x[N],double y[N],double h){
-	for(int i=1;i<=n;i++)y[i]=0;
-	for(int i=1;i<=n;i++)
-		for(int j=1;j<=n;j++)
-			y[i]+=A[i][j]*x[j]/h;
-}
-
-double Vector_M(double x[N],double y[N]){
-	double sum=0;
-	for(int i=1;i<=n;i++)
-		sum+=x[i]*y[i];
-	return sum;
-}
-
-void MatirixM_M(double X[N][N],double Y[N][N]){
-	for(int i=1;i<=n;i++)
-		for(int j=1;j<=n;j++)
-			for(int k=1;k<=n;k++)
-				B[i][j]+=X[i][k]*Y[k][j];
-}
-
-void copy(double X[N][N],double Y[N][N]){
-	for(int i=1;i<=n;i++)
-		for(int j=1;j<=n;j++)
-			X[i][j]=Y[i][j];
-}
-
-void output(double A[N][N]){
-	for(int i=1;i<=n;i++){
-		for(int j=1;j<=n;j++)
-			printf("%.12e ",A[i][j]);
-		printf("\n");
-	}
-}
-
-void QR(double A[N][N],double Q[N][N]){
-	double u[N],w[N],p[N],d,c,h;
-	eye(Q);
-	for(int r=1;r<n;r++){
-		d=0;
-		if(Is_zero(A,r,1))continue;
-		for(int i=r;i<=n;i++)
-			d+=A[i][r]*A[i][r];
-		d=sqrt(d);
-		c=-sgn(A[r][r])*d;
-		h=c*c-c*A[r][r];
-		for(int i=1;i<=n;i++){
-			if(i<r)
-				u[i]=0;
-			else if(i==r)
-				u[i]=A[r][r]-c;
-			else if(i>r)
-				u[i]=A[i][r];
-		}
-		memset(w,0,sizeof(w));
-		Matirix_M(Q,u,w,1);
-		for(int i=1;i<=n;i++)
-			for(int j=1;j<=n;j++)
-				Q[i][j]-=(w[i]*u[j]/h);
-		memset(p,0,sizeof(p));
-		for(int i=1;i<=n;i++)
-			for(int j=1;j<=n;j++)
-				p[i]+=(A[j][i]*u[j]/h);
-		for(int i=1;i<=n;i++)
-			for(int j=1;j<=n;j++)
-				A[i][j]-=(u[i]*p[j]);
-	}
-}
-
-void Householder_Triangularization(double A[N][N]){
-	double u[N],p[N],q[N],d,c,h;
-	for(int r=1;r<n-1;r++){
-		d=0;
-		if(Is_zero(A,r,2))continue;
-		for(int i=r+1;i<=n;i++)
-			d+=A[i][r]*A[i][r];
-		d=sqrt(d);
-		c=-sgn(A[r+1][r])*d;
-		h=c*c-c*A[r+1][r];
-		for(int i=1;i<=n;i++){
-			if(i<=r)
-				u[i]=0;
-			else if(i==(r+1))
-				u[i]=A[i][r]-c;
-			else if(i>r)
-				u[i]=A[i][r];
-		}
-		memset(p,0,sizeof(p));
-		for(int i=1;i<=n;i++)
-			for(int j=1;j<=n;j++)
-				p[i]+=(A[j][i]*u[j]/h);
-		Matirix_M(A,u,q,h);
-		c=Vector_M(p,u)/h;
-		for(int i=1;i<=n;i++)
-			q[i]-=u[i]*c;
-		for(int i=1;i<=n;i++)
-			for(int j=1;j<=n;j++)
-				A[i][j]-=(q[i]*u[j]+u[i]*p[j]);
-	}
-}
-
-
-void select(int k,double b[N][N]){
-	double max,c;
-	int m=k;
-	max=b[k][k];
-	for(int i=k+1;i<=n;i++)
-		if(fabs(b[i][k])>fabs(max)){
-			max=b[i][k];
-			m=i;
-		}
-	if(m!=k)
-		for(int i=k;i<=n+1;i++){
-		c=b[m][i];
-		b[m][i]=b[k][i];
-		b[k][i]=c;
-		}
-}
-
-//Gauss消元法
-void gauss(double lambda)
-{
-    double X[N];
-    double m,sum,t;
-    def();
-    memset(X,0,sizeof(X));
-    for(int i=1;i<=n;i++){
-        a[i][i]-=lambda;
-        a[i][n+1]=0;
-    }
-	for(int k=1;k<n;k++){
-		select(k,a);
-		for(int i=k+1;i<=n;i++){
-			m=a[i][k]/a[k][k];
-		for(int j=k;j<=n+1;j++)
-			a[i][j]-=m*a[k][j];
-		}	
-	}
-	X[n]=1;
-	for(int i=n-1;i>=1;i--){
-		sum=0;	
-		for(int j=i+1;j<=n;j++) 
-			sum+=a[i][j]*X[j];
-		if(fabs(a[i][i])>eps)
-			X[i]=(a[i][n+1]-sum)/a[i][i];
-		else
-			X[i]=0;
-	}
-	t=0;
-	for(int i=1;i<=n;i++)
-		t+=X[i]*X[i];
-	t=sqrt(t);
-	printf("Eigenvector=(");
-	for(int i=1;i<=n;i++)
-        printf("%lf ", X[i]/t);
-    printf(")\n");
-}
-
-void DQR(double A[N][N]){
-	double Q[N][N],M[N][N],s,t,re,im,a,b,c,d;
-	double u[N],v[N],p[N],q[N],h,det;
-	ComplexNumber L[N]; 
-	int m=n,LL=1000,r=1;
-	for(int k=1;k<=100;k++){
-		if (m == 1) {
-            L[r].Re = A[m][m];
-            L[r].Im = 0; break;
-        }
-        else if(m<=0)break; 
-		if(fabs(A[m][m-1])<=eps){
-			L[r].Re = A[m][m];
-            L[r].Im = 0;
-            m--;r++;continue;
-		}
-		a=A[m-1][m-1];
-		b=A[m-1][m];
-		c=A[m][m-1];
-		d=A[m][m];
-		re=(a+d)/2;
-		det=(a-d)*(a-d)+4*b*c;
-		
-		if((m==2)||(fabs(A[m-1][m-2])<=eps)){
-			if(det>0){
-				L[r].Re = re+sqrt(det)/2;
-            	L[r].Im = 0;
-            	L[r+1].Re = re-sqrt(det)/2;
-            	L[r+1].Im = 0;
-            }
-            else if(det<0){
-            	L[r].Re = re;
-            	L[r].Im=sqrt(fabs(det))/2;
-            	L[r+1].Re = re;
-            	L[r+1].Im = -L[r].Im;
-			}
-            m-=2;
-			r+=2;
-			continue;
-		}
-		if(k==LL)break;
-		s=a+d;
-		t=a*d-c*b;
-		memset(M,0,sizeof(M));
-		for(int i=1;i<=m;i++)
-			for(int j=1;j<=m;j++){
-				for(int l=1;l<=m;l++)
-					M[i][j]+=A[i][l]*A[l][j];
-				M[i][j] -= s*A[i][j];
-				M[i][j] += t*(i==j);
-			}
-
-		for(int r=1;r<m;r++){
-			d=0;
-			if(Is_zero(M,r,-m))continue;
-			for(int i=r;i<=m;i++)
-				d+=M[i][r]*M[i][r];
-			d=sqrt(d);
-			c=-sgn(M[r][r])*d;
-			h=c*c-c*M[r][r];
-			for(int i=1;i<=m;i++){
-				if(i<r)
-					u[i]=0;
-				else if(i==r)
-					u[i]=M[r][r]-c;
-				else if(i>r)
-					u[i]=M[i][r];
-			}
-			memset(p,0,sizeof(p));
-			memset(q,0,sizeof(q));
-			memset(v,0,sizeof(v));
-			for(int i=1;i<=m;i++)
-				for(int j=1;j<=m;j++)
-					v[i]+=(M[j][i]*u[j]/h);	
-			for(int i=1;i<=m;i++)
-				for(int j=1;j<=m;j++){
-					M[i][j]-=(u[i]*v[j]);
-					p[i]+=(A[j][i]*u[j]/h);
-					q[i]+=(A[i][j]*u[j]/h);
-				}
-
-			c=0;
-			for(int i=1;i<=m;i++)
-				c+=p[i]*u[i]/h;
-			for(int i=1;i<=m;i++)
-				q[i]-=u[i]*c;
-			for(int i=1;i<=m;i++)
-				for(int j=1;j<=m;j++)
-					A[i][j]-=(q[i]*u[j]+u[i]*p[j]);
-			zeroMat(A);
-		}
-
-	}
-	zeroMat(A);
- 	for(int r = 1; r<=10; r++){
-        printf("\n");
-        if (L[r].Im == 0) {
-            printf("lambda[%d] = %.12e \n", r , L[r].Re); 
-            gauss(L[r].Re);
-        }
-        else {
-            printf("lambda[%d] = %.12e + i*%.12e\n", r , L[r].Re, L[r].Im);
-        }
-    }	
-}
-
-int main(){
-	double Q[N][N];
-	freopen("Works.in","r",stdin);
-	freopen("Works.out","w",stdout);
-	def();
-	Householder_Triangularization(a);
-	printf("A_n-1:\n");
-	output(a);
-	QR(a,Q);
-	printf("\nR:\n");
-	output(a);
-	printf("\nQ:\n");
-	output(Q);
-	memset(B,0,sizeof(B));
-	MatirixM_M(a,Q);
-	printf("\nR*Q:\n");
-	output(B);
-	def();
-	DQR(a);
-	return 0;
-}
-\end{lstlisting}
-
-
-
-
-\chapter{计算结果}
-后面为输出结果:
-\newpage
-
-
-\newpage
-特征值与向量如下:
-
-$\lambda_{1}= 9.432879572769e-001$ 
-
-Eigenvector=(0.079620,\quad 0.045421,\quad -0.018272,\quad -0.047961,\quad -0.349567,\quad 0.207215,\quad -0.152312,\quad 0.820634,\quad -0.355466,\quad 0.028866)
-
-
-\vbox{}
-$\lambda_{2}= 6.489488202110e-001$ 
-
-Eigenvector=(0.108435,\quad 0.071344,\quad 0.382502,\quad -0.047100,\quad -0.717804,\quad 0.181519,\quad -0.226006,\quad 0.388381,\quad 0.289696,\quad 0.024333)
-
-
-\vbox{}
-$\lambda_{3}= -9.891143464725e-001$+ i*1.084758631513e-001
-
-
-\vbox{}
-$\lambda_{4}= -9.891143464725e-001$- i*1.084758631513e-001
-
-
-\vbox{}
-$\lambda_{5}= 4.954990923624e-002$ 
-
-Eigenvector=(-0.213768,\quad -0.206774,\quad 0.386829,\quad -0.031112,\quad -0.380939,\quad -0.125174,\quad 0.644716,\quad -0.308201,\quad -0.295977,\quad 0.043723)
-
-
-\vbox{}
-$\lambda_{6}= -1.493147080915e+000$ 
-
-Eigenvector=(-0.561341,\quad 0.778192,\quad 0.014364,\quad -0.277602,\quad 0.003568,\quad -0.002548,\quad -0.022061,\quad -0.011758,\quad -0.013173,\quad 0.035016)
-
-
-\vbox{}
-$\lambda_{7}= 1.590313458807e+000$ 
-
-Eigenvector=(0.062377,\quad -0.011231,\quad -0.252846,\quad -0.130988,\quad -0.381985,\quad 0.815575,\quad -0.123377,\quad -0.067721,\quad 0.271945,\quad 0.100282)
-
-
-\vbox{}
-$\lambda_{8}= -2.336865932238e+000$+ i*8.934379210213e-001
-
-
-\vbox{}
-$\lambda_{9}= -2.336865932238e+000$- i*8.934379210213e-001
-
-
-\vbox{}
-$\lambda_{10}= 3.389613438816e+000$ 
-
-Eigenvector=(-0.104872,\quad -0.217677,\quad -0.474694,\quad -0.259384,\quad -0.304665,\quad -0.259452,\quad 0.086866,\quad 0.405258,\quad 0.509628,\quad 0.239515)
-
-\chapter{讨论}
-\normalsize
-1.在对$n\times n$实矩阵$\bm{A}$作QR分解或双步位移分解时不需要形成具体的矩阵$\bm{H}_i$，这样可以避免矩阵与矩阵相乘，大大减少了计算量。
-
-2.在QR分解中，R矩阵可以直接储存在A的上三角部分，而在$M_k$的QR分解中，不需要再生成$\bm{B},\bm{C}$矩阵，直接在$\bm{M},\bm{A}$矩阵中迭代即可，以节约储存空间。
-
-3.QR方法适用于计算一般实矩阵的全部特征值，但对于大型实矩阵，则收敛速度不够用了，这时我们为了加速收敛，可以引入位移量,通常, 位移越离特征值越近,收敛速度就越快，如果位移$\sigma$与某个特征值非常接近, 则$\bm{A}_{n,n}^{(k)}-\sigma$就非常接近于0.
-这说明$\bm{A}_{n,n}^{(k)}$通常会首先收敛到$\bm{A}$的一个特征值.所以令$\sigma=\bm{A}_{n,n}^{(k)}$是一个不错的选择.
-但是, 如果这个特征值是复数, 这种位移选取方法就可能失效.
-
-假设$\sigma \in \mathbb{C}$是 $\bm{A}$ 的某个复特征值 $\lambda$ 的一个很好的近似, 则其共轭$\overline{\sigma}$也应
-该是$\overline{\lambda}$的一个很好的近似. 因此我们可以考虑\qd{双位移策略}, 即先以$\sigma$为位移迭代一次, 然后再以$\overline{\sigma}$ 为位移迭代一次, 如此不断交替进行迭代.
-这样就有
-\begin{align*}
-A_1-\sigma I&=Q_1R_1, \\
-A_2&=R_1Q_1+\sigma I,\\
-A_2-\overline{\sigma}I&=Q_2R_2, \\
-A_3&=R_2Q_2+\overline{\sigma}I.
-\end{align*}
-容易验证
-\[A_3=Q_2^TA_2Q_2=Q_2^{\ast}Q_1^{\ast}A_1Q_1Q_2=Q^{\ast}A_1Q,
-\]
-其中$Q=Q_1Q_2$.
-
-我们注意到$\sigma$可能是复的, 所以 $Q_1$ 和 $Q_2$ 都可能是复矩阵. 但我们却可以
-选取适当的 $Q_1$ 和 $Q_2$, 使的 $Q=Q_1Q_2$ 是实正交矩阵
-从而$A_3 = Q^T A_1Q $也是实矩阵. 因此我们无需计算 $A_2$, 而是直接由 $A_1$ 计算出$A_3$.
-
-4.最后，在用Gauss消去法求解$(A-\lambda I)X=0$,求得到对应的特征向量
-时,需要将$X[n]$预设为1，因为由于线性方程组$AX=b$中的$b$向量全为0，所以解的自由度为1，需要自己先将$X[n]$的值定下来，才能迭代出剩下的解，不然求出的的解全为0.
 
 \end{document}
