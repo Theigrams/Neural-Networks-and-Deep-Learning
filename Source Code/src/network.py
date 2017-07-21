@@ -7,12 +7,14 @@ algorithm for a feedforward neural network.  Gradients are calculated
 using backpropagation.  Note that I have focused on making the code
 simple, easily readable, and easily modifiable.  It is not optimized,
 and omits many desirable features.
+一种用于实现前馈神经网络的随机梯度下降学习算法的模块。 
+使用反向传播计算梯度。
 """
 
 #### Libraries
 # Standard library
 import random
-
+import mnist_loader
 # Third-party libraries
 import numpy as np
 
@@ -29,17 +31,31 @@ class Network(object):
         layer is assumed to be an input layer, and by convention we
         won't set any biases for those neurons, since biases are only
         ever used in computing the outputs from later layers."""
+        """
+        sizes是一个列表list,其中储存的是各层中神经元的数量
+        网络的偏移和权重按均值为0方差为1的高斯分布初始化
+        第一层被假设为输入层，没有设置偏差
+        """
         self.num_layers = len(sizes)
         self.sizes = sizes
         self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
         self.weights = [np.random.randn(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
-
+        """
+        np.random.randn(y, x)生成y*x维的标准正态分布数组
+        python切片语法为左开右闭，且从0开始
+        """
+        
     def feedforward(self, a):
         """Return the output of the network if ``a`` is input."""
         for b, w in zip(self.biases, self.weights):
             a = sigmoid(np.dot(w, a)+b)
         return a
+        """
+        np.dot表示点积(哈密顿乘积?),在此处可看做矩阵w与向量a转置的乘积
+        输入的a是一个行向量，每次循环得到这一层神经元的输出值向量
+        最后将得到一个具体的数值
+        """
 
     def SGD(self, training_data, epochs, mini_batch_size, eta,
             test_data=None):
@@ -50,7 +66,16 @@ class Network(object):
         self-explanatory.  If ``test_data`` is provided then the
         network will be evaluated against the test data after each
         epoch, and partial progress printed out.  This is useful for
-        tracking progress, but slows things down substantially."""
+        tracking progress, but slows things down substantially.
+        
+        使用迷你批次随机梯度下降训练神经网络。
+        “training_data”是表示训练输入和所需输出的元组“(x,y)”的列表。
+        epochs:总迭代次数
+        mini_batch_size:采样时小批量数据的大小
+        eta:学习速率
+        test_data:测试集，评估神经网络的准确率
+        """
+        
         if test_data: n_test = len(test_data)
         n = len(training_data)
         for j in xrange(epochs):
@@ -65,12 +90,20 @@ class Network(object):
                     j, self.evaluate(test_data), n_test)
             else:
                 print "Epoch {0} complete".format(j)
-
+        """
+        先用random.shuffle()将training_data数据集打乱
+        再在mini_batches中储存若干个大小为mini_batch_size的小批量数据
+        """
+        
     def update_mini_batch(self, mini_batch, eta):
         """Update the network's weights and biases by applying
         gradient descent using backpropagation to a single mini batch.
         The ``mini_batch`` is a list of tuples ``(x, y)``, and ``eta``
         is the learning rate."""
+        """
+        利用BP算法对单个的小批量数据做权值和偏置的更改
+        """
+        
         nabla_b = [np.zeros(b.shape) for b in self.biases]
         nabla_w = [np.zeros(w.shape) for w in self.weights]
         for x, y in mini_batch:
@@ -81,7 +114,11 @@ class Network(object):
                         for w, nw in zip(self.weights, nabla_w)]
         self.biases = [b-(eta/len(mini_batch))*nb
                        for b, nb in zip(self.biases, nabla_b)]
-
+        """
+        先初始化一个和self.biases格式相同的nabla_b
+        nabla_w表示将每一次迭代的得到C对w的偏导叠加
+        """
+        
     def backprop(self, x, y):
         """Return a tuple ``(nabla_b, nabla_w)`` representing the
         gradient for the cost function C_x.  ``nabla_b`` and
@@ -110,7 +147,7 @@ class Network(object):
         # scheme in the book, used here to take advantage of the fact
         # that Python can use negative indices in lists.
         for l in xrange(2, self.num_layers):
-            z = zs[-l]
+            z = zs[-l]  
             sp = sigmoid_prime(z)
             delta = np.dot(self.weights[-l+1].transpose(), delta) * sp
             nabla_b[-l] = delta
@@ -122,6 +159,9 @@ class Network(object):
         network outputs the correct result. Note that the neural
         network's output is assumed to be the index of whichever
         neuron in the final layer has the highest activation."""
+        """
+        输出的a向量中值最大的下标，即为输出的识别出的数字
+        """
         test_results = [(np.argmax(self.feedforward(x)), y)
                         for (x, y) in test_data]
         return sum(int(x == y) for (x, y) in test_results)
@@ -139,3 +179,10 @@ def sigmoid(z):
 def sigmoid_prime(z):
     """Derivative of the sigmoid function."""
     return sigmoid(z)*(1-sigmoid(z))
+
+
+if __name__=='__main__':  
+    training_data, test_data=load_data()  
+    net=Network([1,2,1])
+    #net.SGD(training_data, 1, 1, 1.0, test_data=test_data) 
+    print(net.backprop(2,3))

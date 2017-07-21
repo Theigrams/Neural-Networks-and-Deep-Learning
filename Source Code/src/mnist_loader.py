@@ -1,7 +1,7 @@
 """
 mnist_loader
 ~~~~~~~~~~~~
-
+导入mnist数据集
 A library to load the MNIST image data.  For details of the data
 structures that are returned, see the doc strings for ``load_data``
 and ``load_data_wrapper``.  In practice, ``load_data_wrapper`` is the
